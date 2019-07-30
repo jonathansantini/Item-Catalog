@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
@@ -17,11 +17,18 @@ session = DBSession()
 @app.route('/')
 @app.route('/categories/')
 def getCategories():
-  return 'homepage'
+  categories = session.query(Category).all()
+  return render_template('categories.html', categories=categories)
 
-@app.route('/category/new/')
+@app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
-  return 'new category!'
+  if request.method == 'POST':
+    newCategory = Category(name=request.form['name'])
+    session.add(newCategory)
+    session.commit()
+    return redirect(url_for('getCategories'))
+  else:
+    return render_template('newCategory.html')
 
 @app.route('/category/<int:category_id>/edit/')
 def editCategory(category_id):

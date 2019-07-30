@@ -1,0 +1,11 @@
+<ul>
+  {% if not categories %}
+    <li>Looks like you don't have any categories, why don't you add one?</li>
+  {% endif %}
+
+  {% for i in categories %}
+    <li>{{i.name}}</li>
+  {% endfor %}
+</ul>
+
+<a href="{{ url_for('newCategory') }}">Add New Category</a>
