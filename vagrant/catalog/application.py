@@ -21,14 +21,14 @@ def getCategories():
   return render_template('categories.html', categories=categories)
 
 @app.route('/category/new/', methods=['GET', 'POST'])
-def newCategory():
+def addCategory():
   if request.method == 'POST':
-    newCategory = Category(name=request.form['name'])
-    session.add(newCategory)
+    addCategory = Category(name=request.form['name'])
+    session.add(addCategory)
     session.commit()
     return redirect(url_for('getCategories'))
   else:
-    return render_template('newCategory.html')
+    return render_template('addCategory.html')
 
 @app.route('/category/<int:category_id>/edit/')
 def editCategory(category_id):
@@ -40,15 +40,29 @@ def deleteCategory(category_id):
 
 @app.route('/category/<int:category_id>/items/')
 def showCategoryItems(category_id):
-  return 'show category %s items!' % category_id
+  categories = session.query(Category).all()
+  category = session.query(Category).filter_by(id=category_id).one()
+  categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
+  return render_template('showCategoryItems.html',
+    category=category,
+    category_id=category_id,
+    categories=categories,
+    categoryItems=categoryItems
+  )
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/')
 def showCategoryItem(category_id, item_id):
   return 'show category %s item %s!' % (category_id, item_id)
 
-@app.route('/category/<int:category_id>/item/new/')
+@app.route('/category/<int:category_id>/item/new/', methods=['GET', 'POST'])
 def addCategoryItem(category_id):
-  return 'add new category %s item!' % category_id
+  if request.method == 'POST':
+    newCategoryItem = CategoryItem(name=request.form['name'], description=request.form['desc'], category_id=category_id)
+    session.add(newCategoryItem)
+    session.commit()
+    return redirect(url_for('showCategoryItems', category_id=category_id))
+  else:
+    return render_template('addCategoryItem.html', category_id=category_id)
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit/')
 def editCategoryItem(category_id, item_id):

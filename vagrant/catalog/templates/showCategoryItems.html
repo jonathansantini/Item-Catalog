@@ -1,0 +1,41 @@
+<html>
+
+<head></head>
+
+<body>
+
+<header></header>
+
+<main>
+  <section>
+    <ul>
+      {% for i in categories %}
+      <li><a href="{{ url_for('showCategoryItems', category_id=i.id) }}">{{ i.name }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('addCategory') }}">Add New Category</a>
+  </section>
+
+  <section>
+
+    <h2>{{ category.name }} Items (Total Items {{ categoryItems | length }})</h2>
+    <ul>
+      {% if not categoryItems %}
+        <li>Looks like you don't have any categories items, why don't you add one?</li>
+      {% endif %}
+
+      {% for i in categoryItems %}
+      <li><a href="{{ url_for('showCategoryItems', category_id=i.id) }}">{{ i.name }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('addCategoryItem', category_id=category_id) }}">Add New Category Item</a>
+
+  </section>
+
+</main>
+
+<footer></footer>
+</body>
+</html>
