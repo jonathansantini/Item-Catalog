@@ -10,11 +10,13 @@
   <section>
     <ul>
       {% for i in categories %}
-      <li><a href="{{ url_for('showCategoryItems', category_id=i.id) }}">{{ i.name }}</a></li>
+      <li><a href="{{ url_for('showItems', category_id=i.id) }}">{{ i.name }}</a></li>
       {% endfor %}
     </ul>
 
     <a href="{{ url_for('addCategory') }}">Add New Category</a>
+
+    <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
   </section>
 
   <section>
@@ -31,8 +33,6 @@
     </ul>
 
     <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
-
-    <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
 
   </section>
 

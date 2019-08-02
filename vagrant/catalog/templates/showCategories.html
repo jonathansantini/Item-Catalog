@@ -7,18 +7,35 @@
 <header></header>
 
 <main>
-  <ul>
-  {% if not categories %}
-    <li>Looks like you don't have any categories, why don't you add one?</li>
-  {% endif %}
 
-  {% for i in categories %}
-  <li><a href="{{ url_for('showCategoryItems', category_id=i.id) }}">{{ i.name }}</a></li>
-  {% endfor %}
-</ul>
+  <section class="sidebar">
+    <ul>
+      {% if not categories %}
+      <li>Looks like you don't have any categories, why don't you add one?</li>
+      {% endif %}
 
-<a href="{{ url_for('addCategory') }}">Add New Category</a>
+      {% for i in categories %}
+      <li><a href="{{ url_for('showItems', category_id=i.id) }}">{{ i.name }}</a></li>
+      {% endfor %}
+    </ul>
 
+    <a href="{{ url_for('addCategory') }}">Add New Category</a>
+  </section>
+
+  <section class="latest-items">
+
+    <h2>Latest Category Items</h2>
+    <ul>
+      {% if not latest_items %}
+      <li>Looks like you don't have any items.  Create or select a category and add one!</li>
+      {% endif %}
+
+      {% for i in latest_items %}
+      <li><a href="{{ url_for('showItem', category_id=i.category_id, item_id=i.id) }}">{{ i.name }}</a></li>
+      {% endfor %}
+    </ul>
+
+  </section>
 </main>
 
 <footer></footer>
