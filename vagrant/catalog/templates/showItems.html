@@ -26,11 +26,13 @@
       {% endif %}
 
       {% for i in categoryItems %}
-      <li><a href="{{ url_for('showCategoryItems', category_id=i.id) }}">{{ i.name }}</a></li>
+      <li><a href="{{ url_for('showItem', category_id=i.category_id, item_id=i.id) }}">{{ i.name }}</a></li>
       {% endfor %}
     </ul>
 
-    <a href="{{ url_for('addCategoryItem', category_id=category_id) }}">Add New Category Item</a>
+    <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+
+    <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
 
   </section>
 
