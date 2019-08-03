@@ -21,13 +21,17 @@
 
   <main class="row">
 
+      {% if self.sidebar() %}
       <section class="col-sm-4 sidebar">
         {% block sidebar %}{% endblock %}
       </section>
+      {% endif %}
 
+      {% if self.content() %}
       <section class="col-sm-8 content">
         {% block content %}{% endblock %}
       </section>
+      {% endif %}
 
   </main>
 </body>

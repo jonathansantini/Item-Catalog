@@ -3,7 +3,7 @@
 {% block content %}
 <h1> New Category Item!</h1>
 
-<form action="{{url_for('addItem', category_id=category_id)}}" method='POST'>
+<form action="{{ url_for('addItem', category_id=category_id) }}" method='POST'>
 
   <p>Name:</p>
 
