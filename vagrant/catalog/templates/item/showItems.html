@@ -1,13 +1,6 @@
-<html>
+{% extends 'base.html' %}
 
-<head></head>
-
-<body>
-
-<header></header>
-
-<main>
-  <section>
+{% block sidebar %}
     <ul>
       {% for i in categories %}
       <li><a href="{{ url_for('showItems', category_id=i.id) }}">{{ i.name }}</a></li>
@@ -17,9 +10,9 @@
     <a href="{{ url_for('addCategory') }}">Add New Category</a>
 
     <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
-  </section>
+{% endblock %}
 
-  <section>
+{% block content %}
 
     <h2>{{ category.name }} Items (Total Items {{ categoryItems | length }})</h2>
     <ul>
@@ -33,11 +26,4 @@
     </ul>
 
     <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
-
-  </section>
-
-</main>
-
-<footer></footer>
-</body>
-</html>
+{% endblock %}

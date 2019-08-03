@@ -19,7 +19,7 @@ session = DBSession()
 def showCategories():
   categories = session.query(Category).all()
   latestItems = session.query(CategoryItem).order_by(text('id desc')).all()
-  return render_template('showCategories.html', categories=categories, latest_items=latestItems)
+  return render_template('category/showCategories.html', categories=categories, latest_items=latestItems)
 
 @app.route('/category/new/', methods=['GET', 'POST'])
 def addCategory():
@@ -29,7 +29,7 @@ def addCategory():
     session.commit()
     return redirect(url_for('showCategories'))
   else:
-    return render_template('addCategory.html')
+    return render_template('category/addCategory.html')
 
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
@@ -41,9 +41,9 @@ def editCategory(category_id):
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
   else:
-    return render_template('editCategory.html', category_id=category_id, category_name=editedCategory.name)
+    return render_template('category/editCategory.html', category_id=category_id, category_name=editedCategory.name)
 
-@app.route('/category/<int:category_id>/delete/')
+@app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
   itemToDelete = session.query(Category).filter_by(id = category_id).one()
   if request.method == 'POST':
@@ -51,14 +51,14 @@ def deleteCategory(category_id):
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
   else:
-    return render_template('deleteCategory.html', category_id=category_id, category_name=itemToDelete.name)
+    return render_template('category/deleteCategory.html', category_id=category_id, category_name=itemToDelete.name)
 
 @app.route('/category/<int:category_id>/items/')
 def showItems(category_id):
   categories = session.query(Category).all()
   category = session.query(Category).filter_by(id=category_id).one()
   categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
-  return render_template('showItems.html',
+  return render_template('item/showItems.html',
     category=category,
     category_id=category_id,
     categories=categories,
@@ -69,7 +69,7 @@ def showItems(category_id):
 def showItem(category_id, item_id):
   categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
   categoryItem = session.query(CategoryItem).filter_by(id=item_id).one()
-  return render_template('showItem.html', category_id=category_id, item=categoryItem, categoryItems=categoryItems )
+  return render_template('item/showItem.html', category_id=category_id, item=categoryItem, categoryItems=categoryItems )
 
 @app.route('/category/<int:category_id>/item/new/', methods=['GET', 'POST'])
 def addItem(category_id):
@@ -79,7 +79,7 @@ def addItem(category_id):
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
   else:
-    return render_template('addItem.html', category_id=category_id)
+    return render_template('item/addItem.html', category_id=category_id)
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
@@ -93,7 +93,7 @@ def editItem(category_id, item_id):
     session.commit()
     return redirect(url_for('showItem', category_id=category_id, item_id=item_id))
   else:
-    return render_template('editItem.html', category_id=category_id, item=itemToEdit)
+    return render_template('item/editItem.html', category_id=category_id, item=itemToEdit)
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
@@ -103,7 +103,7 @@ def deleteItem(category_id, item_id):
     session.commit()
     return redirect(url_for('showItem', category_id=category_id, item=itemToDelete))
   else:
-    return render_template('deleteItem.html', category_id=category_id, item=itemToDelete)
+    return render_template('item/deleteItem.html', category_id=category_id, item=itemToDelete)
 
 
 if __name__ == '__main__':
