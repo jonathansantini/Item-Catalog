@@ -6,3 +6,5 @@
 
 *.db
 *.cfg
+
+client_secrets.json
