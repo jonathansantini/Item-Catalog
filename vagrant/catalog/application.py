@@ -109,6 +109,12 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # see if user exists
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -150,6 +156,29 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+# User Helper Functions
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
 @app.route('/')
 @app.route('/categories/')
 def showCategories():
@@ -162,7 +191,7 @@ def addCategory():
   if 'username' not in login_session:
     return redirect('/login')
   if request.method == 'POST':
-    addCategory = Category(name=request.form['name'])
+    addCategory = Category(name=request.form['name'], user_id=login_session['user_id'])
     session.add(addCategory)
     session.commit()
     return redirect(url_for('showCategories'))
@@ -171,9 +200,11 @@ def addCategory():
 
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
+  editedCategory = session.query(Category).filter_by(id = category_id).one()
   if 'username' not in login_session:
     return redirect('/login')
-  editedCategory = session.query(Category).filter_by(id = category_id).one()
+  if editedCategory.user_id != login_session['user_id']:
+    return "<script>function myFunction() {alert('You are not authorized to edit this category. Please create your own category in order to edit.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
     if request.form['name']:
       editedCategory.name = request.form['name']
@@ -185,9 +216,11 @@ def editCategory(category_id):
 
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+  itemToDelete = session.query(Category).filter_by(id = category_id).one()
   if 'username' not in login_session:
     return redirect('/login')
-  itemToDelete = session.query(Category).filter_by(id = category_id).one()
+  if itemToDelete.user_id != login_session['user_id']:
+    return "<script>function myFunction() {alert('You are not authorized to delete this category. Please create your own category in order to delete.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
     session.delete(itemToDelete)
     session.commit()
@@ -195,10 +228,12 @@ def deleteCategory(category_id):
   else:
     return render_template('category/delete.html', category_id=category_id, category_name=itemToDelete.name)
 
+@app.route('/category/<int:category_id>/')
 @app.route('/category/<int:category_id>/items/')
 def showItems(category_id):
   categories = session.query(Category).all()
   category = session.query(Category).filter_by(id=category_id).one()
+  creator = getUserInfo(category.user_id)
   categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
   return render_template('item/showAll.html',
     category=category,
@@ -217,8 +252,12 @@ def showItem(category_id, item_id):
 def addItem(category_id):
   if 'username' not in login_session:
     return redirect('/login')
+  category = session.query(Category).filter_by(id=category_id).one()
+  if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to add items to this category. Please create your own category in order to add items.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
-    newCategoryItem = CategoryItem(name=request.form['name'], description=request.form['desc'], category_id=category_id)
+    newCategoryItem = CategoryItem(
+        name=request.form['name'], description=request.form['desc'], category_id=category_id, user_id=category.user_id)
     session.add(newCategoryItem)
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
@@ -227,9 +266,14 @@ def addItem(category_id):
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+  itemToEdit = session.query(CategoryItem).filter_by(id = item_id).one()
+  category = session.query(Category).filter_by(id=category_id).one()
   if 'username' not in login_session:
     return redirect('/login')
-  itemToEdit = session.query(CategoryItem).filter_by(id = item_id).one()
+  print(login_session['user_id'])
+  print(category.user_id)
+  if login_session['user_id'] != category.user_id:
+    return "<script>function myFunction() {alert('You are not authorized to edit this item. Please create your own category item in order to edit.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
     if request.form['name']:
       itemToEdit.name = request.form['name']
@@ -243,9 +287,11 @@ def editItem(category_id, item_id):
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+  itemToDelete = session.query(CategoryItem).filter_by(id = item_id).one()
   if 'username' not in login_session:
     return redirect('/login')
-  itemToDelete = session.query(CategoryItem).filter_by(id = item_id).one()
+  if itemToDelete.user_id != login_session['user_id']:
+    return "<script>function myFunction() {alert('You are not authorized to delete this item. Please create your own category item in order to delete.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
     session.delete(itemToDelete)
     session.commit()

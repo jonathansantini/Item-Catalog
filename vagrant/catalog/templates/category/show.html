@@ -9,9 +9,12 @@
     {% for i in categories %}
     <li><a href="{{ url_for('showItems', category_id=i.id) }}">{{ i.name }}</a></li>
     {% endfor %}
+
   </ul>
 
+  {% if 'username' in session %}
   <a href="{{ url_for('addCategory') }}">Add New Category</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,7 +22,9 @@
     <h2>Latest Category Items</h2>
     <ul>
       {% if not latest_items %}
-      <li>Looks like you don't have any items.  Create or select a category and add one!</li>
+      <li>Looks like you don't have any items.
+        {% if 'username' not in session %}<br></br>Create or select a category and add one!{% endif %}
+      </li>
       {% endif %}
 
       {% for i in latest_items %}

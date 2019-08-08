@@ -7,9 +7,11 @@
       {% endfor %}
     </ul>
 
+    {% if 'username' in session %}
     <a href="{{ url_for('addCategory') }}">Add New Category</a>
 
     <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -17,7 +19,8 @@
     <h2>{{ category.name }} Items (Total Items {{ categoryItems | length }})</h2>
     <ul>
       {% if not categoryItems %}
-        <li>Looks like you don't have any categories items, why don't you add one?</li>
+        <li>Looks like you don't have any categories items.
+          {% if 'username' in session %}<br><br>Why don't you add one?{% endif %}</li>
       {% endif %}
 
       {% for i in categoryItems %}
@@ -25,5 +28,7 @@
       {% endfor %}
     </ul>
 
+    {% if 'username' in session %}
     <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+    {% endif %}
 {% endblock %}

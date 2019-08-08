@@ -4,10 +4,10 @@
   </section>
   <section class="col">
     <div class="login">
-      {%if 'username' not in session %}
-      <a href="{{url_for('showLogin')}}">Click Here to Login </a>
+      {% if 'username' not in session %}
+        <a href="{{url_for('showLogin')}}">Click Here to Login </a>
       {% else %}
-      <a href="{{url_for('gdisconnect')}}">Logout </a>
+        <a href="{{url_for('gdisconnect')}}">Logout </a>
       {% endif %}
     </div>
   </section>
