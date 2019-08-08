@@ -4,7 +4,7 @@
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, CategoryItem
+from database_setup import Base, Category, CategoryItem, User
 
 app = Flask(__name__)
 app.config.from_pyfile('instance/application.cfg')
