@@ -7,11 +7,12 @@
       {% endfor %}
     </ul>
 
-    {% if 'username' in session %}
-    <a href="{{ url_for('addCategory') }}">Add New Category</a>
-
-    <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
-    {% endif %}
+    <div>
+      <a href="{{ url_for('addCategory') }}">Add New Category</a>
+    </div>
+    <div>
+      <a href="{{ url_for('showCategories') }}">Back to All Categories</a>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +29,15 @@
       {% endfor %}
     </ul>
 
-    {% if 'username' in session %}
-    <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+    {% if 'username' in session and isCreator %}
+      <div>
+        <a href="{{ url_for('editCategory', category_id=category_id) }}">Edit Category</a>
+      </div>
+      <div>
+        <a href="{{ url_for('deleteCategory', category_id=category_id) }}">Delete Category</a>
+      </div>
+      <div>
+        <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+      </div>
     {% endif %}
 {% endblock %}

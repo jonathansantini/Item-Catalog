@@ -9,12 +9,10 @@
     {% for i in categories %}
     <li><a href="{{ url_for('showItems', category_id=i.id) }}">{{ i.name }}</a></li>
     {% endfor %}
-
   </ul>
 
-  {% if 'username' in session %}
   <a href="{{ url_for('addCategory') }}">Add New Category</a>
-  {% endif %}
+
 {% endblock %}
 
 {% block content %}

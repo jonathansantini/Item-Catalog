@@ -225,7 +225,7 @@ def deleteCategory(category_id):
     session.delete(itemToDelete)
     flash('Category Successfully Deleted %s' % itemToDelete.name)
     session.commit()
-    return redirect(url_for('showItems', category_id=category_id))
+    return redirect(url_for('showCategories'))
   else:
     return render_template('category/delete.html', category_id=category_id, category_name=itemToDelete.name)
 
@@ -234,20 +234,23 @@ def deleteCategory(category_id):
 def showItems(category_id):
   categories = session.query(Category).all()
   category = session.query(Category).filter_by(id=category_id).one()
-  creator = getUserInfo(category.user_id)
   categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
+  isCreator = True if category.user_id == login_session['user_id'] else False
   return render_template('item/showAll.html',
     category=category,
     category_id=category_id,
     categories=categories,
-    categoryItems=categoryItems
+    categoryItems=categoryItems,
+    isCreator=isCreator
   )
 
 @app.route('/category/<int:category_id>/item/<int:item_id>/')
 def showItem(category_id, item_id):
+  category = session.query(Category).filter_by(id=category_id).one()
   categoryItems = session.query(CategoryItem).filter_by(category_id=category_id).all()
   categoryItem = session.query(CategoryItem).filter_by(id=item_id).one()
-  return render_template('item/show.html', category_id=category_id, item=categoryItem, categoryItems=categoryItems )
+  isCreator = True if category.user_id == login_session['user_id'] else False
+  return render_template('item/show.html', category_id=category_id, item=categoryItem, categoryItems=categoryItems, isCreator=isCreator )
 
 @app.route('/category/<int:category_id>/item/new/', methods=['GET', 'POST'])
 def addItem(category_id):
@@ -299,7 +302,7 @@ def deleteItem(category_id, item_id):
     session.delete(itemToDelete)
     session.commit()
     flash('Category Item Successfully Deleted %s' % itemToDelete.name)
-    return redirect(url_for('showCategories', category_id=category_id))
+    return redirect(url_for('showItems', category_id=category_id))
   else:
     return render_template('item/delete.html', category_id=category_id, item_id=item_id, item=itemToDelete)
 

@@ -9,7 +9,11 @@
 
   <p>Are you sure you want to delete category <strong>{{ category_name }}</strong>?</p>
 
-  <input type='submit' value='Edit'>
+  <input type='submit' value='Delete'>
 
 </form>
+
+<div>
+  <a href="{{ url_for('showItems', category_id=category_id) }}">Cancel</a>
+</div>
 {% endblock %}
