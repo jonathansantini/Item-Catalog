@@ -7,8 +7,8 @@
     {% endfor %}
   </ul>
 
-  {% if 'username' in session and isCreator %}
-    <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+  {% if 'username' in session %}
+    <a href="{{ url_for('addCategory') }}">Add New Category</a>
   {% endif %}
   <div>
     <a href="{{ url_for('showItems', category_id=category_id) }}">Back to Category Items</a>
@@ -20,8 +20,14 @@
   <div>{{ item.description }}</div>
 
   {% if 'username' in session and isCreator %}
+  <div>
+  <a href="{{ url_for('addItem', category_id=category_id) }}">Add New Category Item</a>
+  </div>
+  <div>
   <a href="{{ url_for('editItem', category_id=category_id, item_id=item.id) }}">Edit</a>
-
+  </div>
+  <div>
   <a href="{{ url_for('deleteItem', category_id=category_id, item_id=item.id) }}">Delete</a>
+  </div>
   {% endif %}
 {% endblock %}
