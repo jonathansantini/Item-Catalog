@@ -148,13 +148,11 @@ def gdisconnect():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showCategories'))
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("Failed to revoke token for given user.")
+        return redirect(url_for('showCategories'))
 
 # User Helper Functions
 
@@ -194,6 +192,7 @@ def addCategory():
     addCategory = Category(name=request.form['name'], user_id=login_session['user_id'])
     session.add(addCategory)
     session.commit()
+    flash('New Category %s Successfully Created' % addCategory.name)
     return redirect(url_for('showCategories'))
   else:
     return render_template('category/add.html')
@@ -209,6 +208,7 @@ def editCategory(category_id):
     if request.form['name']:
       editedCategory.name = request.form['name']
     session.add(editedCategory)
+    flash('Category Successfully Edited %s' % editedCategory.name)
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
   else:
@@ -223,6 +223,7 @@ def deleteCategory(category_id):
     return "<script>function myFunction() {alert('You are not authorized to delete this category. Please create your own category in order to delete.');}</script><body onload='myFunction()'>"
   if request.method == 'POST':
     session.delete(itemToDelete)
+    flash('Category Successfully Deleted %s' % itemToDelete.name)
     session.commit()
     return redirect(url_for('showItems', category_id=category_id))
   else:
@@ -260,6 +261,7 @@ def addItem(category_id):
         name=request.form['name'], description=request.form['desc'], category_id=category_id, user_id=category.user_id)
     session.add(newCategoryItem)
     session.commit()
+    flash('New Category Item Successfully Created %s' % newCategoryItem.name)
     return redirect(url_for('showItems', category_id=category_id))
   else:
     return render_template('item/add.html', category_id=category_id)
@@ -281,6 +283,7 @@ def editItem(category_id, item_id):
       itemToEdit.description = request.form['desc']
     session.add(itemToEdit)
     session.commit()
+    flash('Category Item Successfully Edited %s' % itemToEdit.name)
     return redirect(url_for('showItem', category_id=category_id, item_id=item_id))
   else:
     return render_template('item/edit.html', category_id=category_id, item=itemToEdit)
@@ -295,9 +298,10 @@ def deleteItem(category_id, item_id):
   if request.method == 'POST':
     session.delete(itemToDelete)
     session.commit()
-    return redirect(url_for('showItem', category_id=category_id, item=itemToDelete))
+    flash('Category Item Successfully Deleted %s' % itemToDelete.name)
+    return redirect(url_for('showCategories', category_id=category_id))
   else:
-    return render_template('item/delete.html', category_id=category_id, item=itemToDelete)
+    return render_template('item/delete.html', category_id=category_id, item_id=item_id, item=itemToDelete)
 
 # JSON endpoints
 @app.route('/category/<int:category_id>/items/json')
