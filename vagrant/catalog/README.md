@@ -1,5 +1,13 @@
 # Udacity Full Stack Web Developer Nanodegree Catalog Application Project
 
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Intro](#intro)
+- [Environment Installation](#environment-installation)
+- [Instructions](#instructions)
+- [Endpoint Structure](#endpoint-structure)
+
 ## Intro
 On the surface, the Catalog Item application is a web application that stores items based on categories for easy reference.
 
@@ -89,5 +97,35 @@ You should be now able to go to `http://localhost:5000` and view the landing pag
 
 ### Logging into the application
 
-NOTE: In-order to see the sign-in functionality, you need to create a google api account and download the `client_secrets.json` to the root of the application.
+NOTE: In-order to see the sign-in functionality, you need to create a google api account and do the following:
 
+- Download the `client_secrets.json` file and add it to the root of the application.
+- Update the `client_id` in `templates/login.html`
+
+## Endpoint Structure
+Here are the json data structures available for the application.
+
+### Individual Item
+
+```
+/category/<int:category_id>/item/<int:item_id>/json
+
+Item	
+  category_id   Integer
+  description   String
+  id    Integer
+  name    String
+```
+
+### Category Items
+
+```
+/category/<int:category_id>/items/json
+
+CategoryItems	
+  0	
+    category_id   Integer
+    description   String
+    id    Integer
+    name    String
+``` 
