@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 #
 
-from flask import Flask, flash, render_template
-from flask import request, redirect, url_for, jsonify
-from flask import session as login_session
-from flask import make_response
+from flask import (
+    Flask,
+    flash,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+    session as login_session,
+    make_response
+)
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem, User
