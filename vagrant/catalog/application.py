@@ -293,12 +293,15 @@ def editItem(category_id, item_id):
   if request.method == 'POST':
     if request.form['name']:
       itemToEdit.name = request.form['name']
-    if request.form['desc']:
-      itemToEdit.description = request.form['desc']
-    session.add(itemToEdit)
-    session.commit()
-    flash('Category Item Successfully Edited %s' % itemToEdit.name)
-    return redirect(url_for('showItem', category_id=category_id, item_id=item_id))
+      if request.form['desc']:
+        itemToEdit.description = request.form['desc']
+      session.add(itemToEdit)
+      session.commit()
+      flash('Category Item Successfully Edited %s' % itemToEdit.name)
+      return redirect(url_for('showItem', category_id=category_id, item_id=item_id))
+    else:
+      flash('Item Name is required.')
+      return render_template('item/edit.html', category_id=category_id, item=itemToEdit)
   else:
     return render_template('item/edit.html', category_id=category_id, item=itemToEdit)
 
